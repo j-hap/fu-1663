@@ -7,10 +7,6 @@ package ea.ke1._01;
 class Wall {
   private boolean active = false;
 
-  Wall(boolean active) {
-    this.active = active;
-  }
-
   void activate() {
     active = true;
   }

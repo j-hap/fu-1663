@@ -33,6 +33,10 @@ class Square {
     return type == SquareType.TRAP;
   }
 
+  public boolean isDefault() {
+    return type == SquareType.DEFAULT;
+  }
+
   /**
    * @param position side of the wall
    * @return true if square as active wall on given side

@@ -11,6 +11,8 @@ public class Labyrinth {
   private final int nColumns;
   private final int nRows;
   private final Square[][] squares;
+  private Square currentStart = null;
+  private Square currentFinish = null;
 
   /**
    * @param nRows    Number of squares in each column of the labyrinth
@@ -18,11 +20,17 @@ public class Labyrinth {
    */
   public Labyrinth(int nRows, int nColumns) {
     // additional rows and cols for outer border
+    if (nRows * nColumns == 1) {
+      throw new IllegalArgumentException("Number of squares must be > 1");
+    }
     this.nRows = nRows;
     this.nColumns = nColumns;
     squares = new Square[nRows][nColumns];
     initSquares();
     addOuterBorder();
+    // default start and finish
+    setStart(0,0);
+    setFinish(nRows-1,nColumns-1);
   }
 
   /**
@@ -85,7 +93,12 @@ public class Labyrinth {
    * @param iColumn row index of square to modify
    */
   public void setTrap(int iRow, int iColumn) {
-    getSquare(iRow, iColumn).setType(SquareType.TRAP);
+    Square target = getSquare(iRow, iColumn);
+    if (target.isDefault() || target.isTrap()) {
+      target.setType(SquareType.TRAP);
+    } else {
+      throw new IllegalArgumentException("Selected square is already Start or Finish");
+    }
   }
 
   public int countTraps() {
@@ -107,7 +120,12 @@ public class Labyrinth {
    * @param iColumn row index of square to modify
    */
   public void setStart(int iRow, int iColumn) {
-    getSquare(iRow, iColumn).setType(SquareType.START);
+    Square newStart = getSquare(iRow, iColumn);
+    newStart.setType(SquareType.START);
+    if (currentStart != null) {
+      currentStart.setType(SquareType.DEFAULT);
+    }
+    currentStart = newStart;
   }
 
   /**
@@ -117,7 +135,12 @@ public class Labyrinth {
    * @param iColumn row index of square to modify
    */
   public void setFinish(int iRow, int iColumn) {
-    getSquare(iRow, iColumn).setType(SquareType.FINISH);
+    Square newFinish = getSquare(iRow, iColumn);
+    newFinish.setType(SquareType.FINISH);
+    if (currentFinish != null) {
+      currentFinish.setType(SquareType.DEFAULT);
+    }
+    currentFinish = newFinish;
   }
 
 
@@ -233,9 +256,9 @@ public class Labyrinth {
     Labyrinth l = new Labyrinth(5, 5);
 //    l.addAllWalls();
     l.addRandomWalls();
-    l.setStart(0, 0);
-    l.setFinish(4, 4);
-    l.setTrap(2, 3);
+    l.setStart(0, 1);
+    l.setFinish(4, 3);
+    l.setTrap(0, 0);
     l.setTrap(1, 4);
     l.print();
   }

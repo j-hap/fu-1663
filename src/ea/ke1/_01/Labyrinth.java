@@ -175,8 +175,8 @@ public class Labyrinth {
     int nWalls = rand.nextInt(nMaxWalls);
     for (int iWall = 0; iWall < nWalls; ++iWall) {
       WallPosition pos = WallPosition.getRandom();
-      int iRow = rand.nextInt(nRows - 1);
-      int iCol = rand.nextInt(nColumns - 1);
+      int iRow = rand.nextInt(nRows);
+      int iCol = rand.nextInt(nColumns);
       squares[iRow][iCol].setWall(pos);
     }
   }
@@ -250,6 +250,7 @@ public class Labyrinth {
       squares[nRows - 1][iCol].printBottomWall();
     }
     System.out.print(squares[nRows - 1][nColumns - 1].getBottomRightCorner().character);
+    System.out.println();
   }
 
   public static void main(String[] args) {

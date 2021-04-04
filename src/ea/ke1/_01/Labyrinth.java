@@ -1,7 +1,6 @@
 package ea.ke1._01;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Random;
 
 /**
@@ -29,8 +28,8 @@ public class Labyrinth {
     initSquares();
     addOuterBorder();
     // default start and finish
-    setStart(0,0);
-    setFinish(nRows-1,nColumns-1);
+    setStart(0, 0);
+    setFinish(nRows - 1, nColumns - 1);
   }
 
   /**
@@ -79,11 +78,10 @@ public class Labyrinth {
    * @return A Square object at the specified coordinates
    */
   private Square getSquare(int iRow, int iColumn) {
-    try {
-      return squares[iRow][iColumn];
-    } catch (ArrayIndexOutOfBoundsException e) {
+    if (iRow >= nRows || iColumn >= nColumns) {
       throw new InvalidSquareException();
     }
+    return squares[iRow][iColumn];
   }
 
   /**
@@ -93,12 +91,7 @@ public class Labyrinth {
    * @param iColumn row index of square to modify
    */
   public void setTrap(int iRow, int iColumn) {
-    Square target = getSquare(iRow, iColumn);
-    if (target.isDefault() || target.isTrap()) {
-      target.setType(SquareType.TRAP);
-    } else {
-      throw new IllegalArgumentException("Selected square is already Start or Finish");
-    }
+    getSquare(iRow, iColumn).setTrap();
   }
 
   public int countTraps() {
@@ -167,7 +160,8 @@ public class Labyrinth {
   }
 
   /**
-   * Adds arbitrary walls to game board. Game is not ensured to be solvable.
+   * Adds arbitrary walls to game board.
+   * Game is not ensured to be solvable.
    */
   public void addRandomWalls() {
     Random rand = new Random();
@@ -182,74 +176,45 @@ public class Labyrinth {
   }
 
   /**
+   * Collects corners for current wall configuration
+   */
+  private BoxCharacter[][] getCorners() {
+    BoxCharacter[][] corners = new BoxCharacter[nRows + 1][nColumns + 1];
+    for (int iRow = 0; iRow < nRows; ++iRow) {
+      for (int iCol = 0; iCol < nColumns; ++iCol) {
+        corners[iRow][iCol] = squares[iRow][iCol].getTopLeftCorner().merge(corners[iRow][iCol]);
+        corners[iRow][iCol + 1] = squares[iRow][iCol].getTopRightCorner().merge(corners[iRow][iCol + 1]);
+        corners[iRow + 1][iCol] = squares[iRow][iCol].getBottomLeftCorner().merge(corners[iRow + 1][iCol]);
+        corners[iRow + 1][iCol + 1] = squares[iRow][iCol].getBottomRightCorner().merge(corners[iRow + 1][iCol + 1]);
+      }
+    }
+    return corners;
+  }
+
+  /**
    * Prints game board to stdout
    */
   public void print() {
-    // top walls of first row
-    System.out.print(squares[0][0].getTopLeftCorner().character);
-    squares[0][0].printTopWall();
-    for (int iCol = 1; iCol < nColumns; ++iCol) {
-      BoxCharacter wallToPrint = BoxCharacter.merge(EnumSet.of(
-              squares[0][iCol - 1].getTopRightCorner(),
-              squares[0][iCol].getTopLeftCorner()));
-      System.out.print(wallToPrint.character);
-      squares[0][iCol].printTopWall();
-    }
-    System.out.print(squares[0][nColumns - 1].getTopRightCorner().character);
-    System.out.println();
-
-    // vertical walls of first row
-    squares[0][0].printLeftWall();
-    for (int iCol = 0; iCol < nColumns; ++iCol) {
-      squares[0][iCol].print();
-      squares[0][iCol].printRightWall();
-    }
-    System.out.println();
-
-    for (int iRow = 1; iRow < nRows; ++iRow) {
-      // leftmost column with only two corners to merge
-      BoxCharacter wallToPrint = BoxCharacter.merge(EnumSet.of(
-              squares[iRow - 1][0].getBottomLeftCorner(),
-              squares[iRow][0].getTopLeftCorner()));
-      System.out.print(wallToPrint.character);
-      squares[iRow][0].printTopWall();
-
-      // all inner squares
-      for (int iCol = 1; iCol < nColumns; ++iCol) {
-        wallToPrint = BoxCharacter.merge(EnumSet.of(
-                squares[iRow - 1][iCol - 1].getBottomRightCorner(),
-                squares[iRow - 1][iCol].getBottomLeftCorner(),
-                squares[iRow][iCol - 1].getTopRightCorner(),
-                squares[iRow][iCol].getTopLeftCorner()));
-        System.out.print(wallToPrint.character);
+    BoxCharacter[][] corners = getCorners();
+    for (int iRow = 0; iRow < nRows; ++iRow) {
+      for (int iCol = 0; iCol < nColumns; ++iCol) {
+        corners[iRow][iCol].print();
         squares[iRow][iCol].printTopWall();
       }
-      wallToPrint = BoxCharacter.merge(EnumSet.of(
-              squares[iRow - 1][nColumns - 1].getBottomRightCorner(),
-              squares[iRow][nColumns - 1].getTopRightCorner()));
-      System.out.print(wallToPrint.character);
+      corners[iRow][nColumns].print();
       System.out.println();
-
-      // vertical walls
-      squares[iRow][0].printLeftWall();
       for (int iCol = 0; iCol < nColumns; ++iCol) {
+        squares[iRow][iCol].printLeftWall();
         squares[iRow][iCol].print();
-        squares[iRow][iCol].printRightWall();
       }
+      squares[iRow][nColumns - 1].printRightWall();
       System.out.println();
     }
-
-    // bottom walls of last row
-    System.out.print(squares[nRows - 1][0].getBottomLeftCorner().character);
-    squares[nRows - 1][0].printBottomWall();
-    for (int iCol = 1; iCol < nColumns; ++iCol) {
-      BoxCharacter wallToPrint = BoxCharacter.merge(EnumSet.of(
-              squares[nRows - 1][iCol - 1].getBottomRightCorner(),
-              squares[nRows - 1][iCol].getBottomLeftCorner()));
-      System.out.print(wallToPrint.character);
+    for (int iCol = 0; iCol < nColumns; ++iCol) {
+      corners[nRows][iCol].print();
       squares[nRows - 1][iCol].printBottomWall();
     }
-    System.out.print(squares[nRows - 1][nColumns - 1].getBottomRightCorner().character);
+    corners[nRows][nColumns].print();
     System.out.println();
   }
 

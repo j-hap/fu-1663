@@ -67,23 +67,32 @@ class Square {
     type = newType;
   }
 
+  public void setTrap() {
+    if (isDefault() || isTrap()) {
+      type = SquareType.TRAP;
+    } else {
+      throw new IllegalArgumentException("Selected square is already Start or Finish");
+    }
+  }
+
+
   private void printVerticalWall(WallPosition pos) {
     if (hasWall(pos)) {
-      System.out.print(BoxCharacter.PIPE.character);
+      BoxCharacter.PIPE.print();
     } else {
-      System.out.print(BoxCharacter.NONE.character);
+      BoxCharacter.NONE.print();
     }
   }
 
   private void printHorizontalWall(WallPosition pos) {
     if (hasWall(pos)) {
-      System.out.print(BoxCharacter.DASH.character);
-      System.out.print(BoxCharacter.DASH.character);
-      System.out.print(BoxCharacter.DASH.character);
+      BoxCharacter.DASH.print();
+      BoxCharacter.DASH.print();
+      BoxCharacter.DASH.print();
     } else {
-      System.out.print(BoxCharacter.NONE.character);
-      System.out.print(BoxCharacter.NONE.character);
-      System.out.print(BoxCharacter.NONE.character);
+      BoxCharacter.NONE.print();
+      BoxCharacter.NONE.print();
+      BoxCharacter.NONE.print();
     }
   }
 

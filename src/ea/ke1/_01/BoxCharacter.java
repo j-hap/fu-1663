@@ -24,7 +24,7 @@ enum BoxCharacter {
   INTERSECTION(TOP_T.value | BOTTOM_T.value, '┼');
 
   private final int value;
-  public final char character;
+  private final char character;
 
   BoxCharacter(int value, char character) {
     this.value = value;
@@ -38,6 +38,17 @@ enum BoxCharacter {
       }
     }
     return NONE;
+  }
+
+  public BoxCharacter merge(BoxCharacter other) {
+    if (other == null) {
+      return this;
+    }
+    return fromValue(this.value | other.value);
+  }
+
+  public void print() {
+    System.out.print(this.character);
   }
 
   public static BoxCharacter merge(EnumSet<BoxCharacter> elements) {

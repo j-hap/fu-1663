@@ -71,7 +71,9 @@ class Square {
     if (isDefault() || isTrap()) {
       type = SquareType.TRAP;
     } else {
-      throw new IllegalArgumentException("Selected square is already Start or Finish");
+      throw new IllegalArgumentException(
+        "Selected square is already Start or Finish"
+        );
     }
   }
 
@@ -157,6 +159,6 @@ class Square {
   }
 
   public void print() {
-    System.out.print(type.string);
+    type.print();
   }
 }

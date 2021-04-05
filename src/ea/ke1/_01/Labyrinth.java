@@ -138,7 +138,8 @@ public class Labyrinth {
 
 
   /**
-   * Creates a wall on the given side of the square with given coordinates
+   * Creates a wall on the given side of the square
+   * with given coordinates
    *
    * @param iRow    row index of square to modify
    * @param iColumn row index of square to modify
@@ -182,10 +183,15 @@ public class Labyrinth {
     BoxCharacter[][] corners = new BoxCharacter[nRows + 1][nColumns + 1];
     for (int iRow = 0; iRow < nRows; ++iRow) {
       for (int iCol = 0; iCol < nColumns; ++iCol) {
-        corners[iRow][iCol] = squares[iRow][iCol].getTopLeftCorner().merge(corners[iRow][iCol]);
-        corners[iRow][iCol + 1] = squares[iRow][iCol].getTopRightCorner().merge(corners[iRow][iCol + 1]);
-        corners[iRow + 1][iCol] = squares[iRow][iCol].getBottomLeftCorner().merge(corners[iRow + 1][iCol]);
-        corners[iRow + 1][iCol + 1] = squares[iRow][iCol].getBottomRightCorner().merge(corners[iRow + 1][iCol + 1]);
+        Square sq = squares[iRow][iCol];
+        corners[iRow][iCol] =
+                sq.getTopLeftCorner().merge(corners[iRow][iCol]);
+        corners[iRow][iCol + 1] =
+                sq.getTopRightCorner().merge(corners[iRow][iCol + 1]);
+        corners[iRow + 1][iCol] =
+                sq.getBottomLeftCorner().merge(corners[iRow + 1][iCol]);
+        corners[iRow + 1][iCol + 1] =
+                sq.getBottomRightCorner().merge(corners[iRow + 1][iCol + 1]);
       }
     }
     return corners;

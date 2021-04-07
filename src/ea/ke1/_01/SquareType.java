@@ -9,6 +9,6 @@ enum SquareType {
   }
 
   public void print() {
-    System.out.println(this.string);
+    System.out.print(this.string);
   }
 }

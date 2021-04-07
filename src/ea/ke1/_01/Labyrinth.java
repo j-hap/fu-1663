@@ -216,24 +216,27 @@ public class Labyrinth {
   public void print() {
     BoxCharacter[][] corners = getCorners();
     for (int iRow = 0; iRow < nRows; ++iRow) {
+      // walls and edges above square
       for (int iCol = 0; iCol < nColumns; ++iCol) {
         corners[iRow][iCol].print();
         squares[iRow][iCol].printTopWall();
       }
-      corners[iRow][nColumns].print();
+      corners[iRow][nColumns].print(); // last corner
       System.out.println();
+      // vertical walls and squares themselves
       for (int iCol = 0; iCol < nColumns; ++iCol) {
         squares[iRow][iCol].printLeftWall();
         squares[iRow][iCol].print();
       }
-      squares[iRow][nColumns - 1].printRightWall();
+      squares[iRow][nColumns - 1].printRightWall(); // last wall
       System.out.println();
     }
+    // bottom row of walls and corners
     for (int iCol = 0; iCol < nColumns; ++iCol) {
       corners[nRows][iCol].print();
       squares[nRows - 1][iCol].printBottomWall();
     }
-    corners[nRows][nColumns].print();
+    corners[nRows][nColumns].print(); // bottom right corner of board
     System.out.println();
   }
 

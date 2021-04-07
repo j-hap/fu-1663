@@ -176,6 +176,19 @@ public class Labyrinth {
     }
   }
 
+  public void addRandomTraps() {
+    Random rand = new Random();
+    int nTrapsMax = nRows * nColumns / 3 - 2;
+    int nTraps = rand.nextInt(nTrapsMax);
+    for (int iTrap = 0; iTrap < nTrapsMax; ++iTrap) {
+      int iRow = rand.nextInt(nRows);
+      int iCol = rand.nextInt(nColumns);
+      if (squares[iRow][iCol].isDefault()) {
+        setTrap(iRow, iCol);
+      }
+    }
+  }
+
   /**
    * Collects corners for current wall configuration
    */
@@ -224,14 +237,24 @@ public class Labyrinth {
     System.out.println();
   }
 
-  public static void main(String[] args) {
-    Labyrinth l = new Labyrinth(5, 5);
-//    l.addAllWalls();
+  /**
+   * Generates a randomized labyrith, that is not guaranteed to be solvable
+   */
+  public static Labyrinth getRandom() {
+    Random rand = new Random();
+    int nRows = rand.nextInt(30);
+    int nCols = rand.nextInt(30);
+    Labyrinth l = new Labyrinth(nRows, nCols);
     l.addRandomWalls();
-    l.setStart(0, 1);
-    l.setFinish(4, 3);
-    l.setTrap(0, 0);
-    l.setTrap(1, 4);
+    l.setStart(rand.nextInt(nRows), rand.nextInt(nCols));
+    l.setFinish(rand.nextInt(nRows), rand.nextInt(nCols));
+    l.addRandomTraps();
+    return l;
+  }
+
+  public static void main(String[] args) {
+    Labyrinth l = getRandom();
     l.print();
+    System.out.println("Labyrinth contains " + l.countTraps() + " traps.");
   }
 }
